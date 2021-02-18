@@ -27,8 +27,11 @@ $wpf.Button_Import.Add_Click({
             .Text = Raw content
             .Width
             .Height
-            .<Ratio (W/H)>
             .FPS
+            .<Ratio (W/H)>
+            .<Image prefix>
+            .<CurrentPart>
+            .<FrameInterval>
 
             .Animation
                 [0]
@@ -41,19 +44,25 @@ $wpf.Button_Import.Add_Click({
         $desc | Add-Member NoteProperty Width  $FirstLine[0]
         $desc | Add-Member NoteProperty Height $FirstLine[1]
         $desc | Add-Member NoteProperty FPS    $FirstLine[2]
-        $desc | Add-Member NoteProperty Ratio  ($desc.Width/$desc.Height)
         $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
+        
+        $desc | Add-Member NoteProperty Interval (1000/$desc.FPS)
+        $desc | Add-Member NoteProperty Ratio ($desc.Width/$desc.Height)
+        $desc | Add-Member NoteProperty Part  0
+        $TempPrefix = (Get-ChildItem $TempZip\part0).name | Select-Object -First 1
+        $desc | Add-Member NoteProperty Prefix $TempPrefix.Substring(0, $TempPrefix.Length-5)
+
 
         (Get-Content $TempZip\desc.txt | Select-Object -Skip 1).ForEach({
             $ThisLine = $_ -Split ' '
             $desc.Animation.Add(
                 [PSCustomObject] @{
-                    Type  = $ThisLine[0]
-                    Count = $ThisLine[1]
-                    Pause = $ThisLine[2]
-                    Path  = $ThisLine[3]
+                    Type   = $ThisLine[0]
+                    Repeat = $ThisLine[1]
+                    Pause  = $ThisLine[2]
+                    Path   = $ThisLine[3]
                 }
             )
-        }) 
+        })
     }
 })
