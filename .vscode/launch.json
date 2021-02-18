@@ -4,11 +4,18 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+    {
+        "name": "PowerShell Launch Current File",
+        "type": "PowerShell",
+        "request": "launch",
+        "script": "${file}",
+        "cwd": "${file}"
+    },
         {
             "name": "PowerShell: Launch Script",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder}/Resources/Loader.ps1",
+            "script": "${workspaceFolder}/Loader-MT.ps1",
             "cwd": "${workspaceFolder}"
         }
     ]
