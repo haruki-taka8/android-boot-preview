@@ -38,16 +38,18 @@
 
             <GroupBox Header="Preview control" Grid.Row="2">
                 <StackPanel Margin="8">
-                    <UniformGrid Columns="5" MinWidth="750" HorizontalAlignment="Left" Margin="8,8,0,16">
+                    <UniformGrid Columns="6" MinWidth="750" HorizontalAlignment="Left" Margin="8,8,0,16">
                         <TextBlock Text="Part"/>
                         <TextBlock Text="Frame"/>
                         <TextBlock Text="Screen Width"/>
                         <TextBlock Text="Screen Height"/>
+                        <TextBlock Text="Repeat when 0"/>
                         <TextBlock/>
                         <TextBlock Name="TextBlock_Part" Text="-1"/>
                         <TextBlock Name="TextBlock_Frame" Text="-1"/>
                         <TextBox   Name="TextBox_ScreenWidth" Text="1080" Margin="0,0,8,0"/>
                         <TextBox   Name="TextBox_ScreenHeight" Text="1920" Margin="0,0,8,0"/>
+                        <TextBox   Name="TextBox_RepeatWhen0" Text="2" Margin="0,0,8,0"/>
                         <Button    Name="Button_Update" Content="Update Layout" Width="150"/>
                     </UniformGrid>
                     <UniformGrid Columns="5">
