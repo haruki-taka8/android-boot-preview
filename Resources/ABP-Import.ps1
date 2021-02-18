@@ -18,14 +18,8 @@ $wpf.Button_Import.Add_Click({
         Remove-Item $TempZip -Recurse
         Expand-Archive $wpf.TextBox_Filename.Text $TempZip
 
-        # Identify content
-        if (Test-Path "$TempZip\desc.txt") {
-            $wpf.TextBlock_Status.Text = 'desc.txt: Exist'
-        } else {
-            $wpf.TextBlock_Status.Text = 'desc.txt: Missing'
-        }
-
-        $wpf.TextBlock_Status.Text += "`nParts: " +
-                                      (Get-ChildItem $TempZip Part*).Count
+        # Show desc.txt content
+        $Desc = (Get-Content $TempZip\desc.txt -Raw)
+        $wpf.TextBox_desc.Text = $desc
     }
 })
