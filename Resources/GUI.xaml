@@ -1,0 +1,15 @@
+<Window Name="ABP"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Android Boot Preview" Height="720" Width="1440" FontFamily="Courier New" FontSize="16">
+    
+    <Grid Margin="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Center"/>
+    </Grid>
+</Window>
