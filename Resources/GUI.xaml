@@ -1,14 +1,37 @@
 <Window Name="ABP"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Android Boot Preview" Height="720" Width="1440" FontFamily="Courier New" FontSize="16">
-    
+        Title="Android Boot Preview" Height="720" Width="1440">
+
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
             <ColumnDefinition Width="10"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <GroupBox Header="Import bootanimation.zip">
+                <StackPanel Margin="8" Name="StackPanel_Import">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="210"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Name="TextBox_Filename"/>
+                        <Button  Name="Button_Filename" Content="Browse" Grid.Column="1" HorizontalAlignment="Right" Width="200"/>
+                    </Grid>
+                    
+                    <Button Name="Button_Import" Content="Import File" Margin="0,8,0,0" Width="{Binding ElementName=StackPanel_Import, Path=ActualWidth}" HorizontalAlignment="Left"/>
+                    <TextBlock Name="TextBlock_Status" Margin="0,16,0,0" Text="Awaiting import ..."/>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
 
         <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Center"/>
     </Grid>
