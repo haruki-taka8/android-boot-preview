@@ -22,9 +22,6 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]").Name.
 
 # Import GUI Control functions
 Import-Module "$baseLocation\ABP-Import.ps1"
-#     "$baseLocation\Functions\SF7N-Edit.ps1",
-#     "$baseLocation\Functions\SF7N-Search.ps1",
-#     "$baseLocation\SF7N-GUI.ps1"
 
 # Cleanup on close
 $wpf.ABP.Add_Closing({Remove-Module 'ABP-*'})
