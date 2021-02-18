@@ -14,8 +14,8 @@ $wpf.Button_Filename.Add_Click({
 $wpf.Button_Import.Add_Click({
     if (Test-Path $wpf.TextBox_Filename.Text) {
         # Unzip
-        $script:TempZip = "$baseLocation\tempZip"
-        If (Test-Path $TempZip) {Remove-Item $TempZip -Recurse}
+        $script:TempZip = "$PSSCriptRoot\tempZip"
+        If (Test-Path $TempZip) {Remove-Item "$TempZip\*" -Recurse}
         Expand-Archive $wpf.TextBox_Filename.Text $TempZip -Force
 
         # Show desc.txt content

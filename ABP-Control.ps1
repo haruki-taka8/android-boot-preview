@@ -1,30 +1,30 @@
 # Handles everything related to previewing the animation
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
 function Set-PreviewBackground {
-    $ScreenRatio = $wpf.TextBox_ScreenWidth.Text / $wpf.TextBox_ScreenHeight.Text
-    $wpf.Grid_PreviewBackground.Height = $wpf.Grid_PreviewBackground.ActualWidth / $ScreenRatio
-    $wpf.Image_Preview.Width = $wpf.Grid_PreviewBackground.ActualWidth * ($desc.Width / $wpf.TextBox_ScreenWidth.Text)
-    
+    if (($wpf.TextBox_ScreenWidth.Text -match '^\d+$') -and
+        ($wpf.TextBox_ScreenWidth.Text -match '^\d+$')) 
+    {
+        $ScreenRatio = $wpf.TextBox_ScreenWidth.Text / $wpf.TextBox_ScreenHeight.Text
+        $wpf.Grid_PreviewBackground.Height = $wpf.Grid_PreviewBackground.ActualWidth / $ScreenRatio
+        $wpf.Image_Preview.Width = $wpf.Grid_PreviewBackground.ActualWidth * ($desc.Width / $wpf.TextBox_ScreenWidth.Text)
+    }
 }
 
 function Update-GUI {
-    $wpf.ABP.Dispatcher.Invoke("Render",[action][scriptblock]{})
+    $wpf.Window.Dispatcher.Invoke("Render",[action][scriptblock]{})
 }
 
-$wpf.Button_Update.Add_Click({
-    if (($wpf.TextBox_ScreenWidth.Text -match '^\d+$') -and
-        ($wpf.TextBox_ScreenWidth.Text -match '^\d+$')) 
-    {Set-PreviewBackground}
-})
-
-$wpf.ABP.Add_SizeChanged({Set-PreviewBackground})
+$wpf.Button_Update.Add_Click({Set-PreviewBackground})
+$wpf.Window.Add_SizeChanged({Set-PreviewBackground})
 
 $wpf.Button_Play.Add_Click({
+    # Initialization
+    Set-PreviewBackground
     $k = 0
     # Foreach part
     for ($i = 0; $i -le $desc.Animation.Count-1; $i++) {
         $wpf.TextBlock_Part.Text = $i
-        
+
         # Repeat part if needed
         $RepeatCount = $desc.Animation[$i].Repeat-1
         if ($RepeatCount -lt 0) {
@@ -36,7 +36,6 @@ $wpf.Button_Play.Add_Click({
             }
         }
         for ($j = 0; $j -le $RepeatCount; $j++) {
-            
             # Foreach frame
             (Get-ChildItem "$TempZip\part$i\*.png").FullName.ForEach({
                 $wpf.Image_Preview.Source = $_
@@ -45,6 +44,6 @@ $wpf.Button_Play.Add_Click({
                 Start-Sleep -Milliseconds $desc.Interval
                 ++ $k
             })
-        }
+        } 
     }
 })
