@@ -16,7 +16,7 @@ $wpf.Button_Import.Add_Click({
         # Unzip
         $script:TempZip = "$baseLocation\tempZip"
         If (Test-Path $TempZip) {Remove-Item $TempZip -Recurse}
-        Expand-Archive $wpf.TextBox_Filename.Text $TempZip
+        Expand-Archive $wpf.TextBox_Filename.Text $TempZip -Force
 
         # Show desc.txt content
         $script:desc = [PSCustomObject] @{}
@@ -30,7 +30,6 @@ $wpf.Button_Import.Add_Click({
             .FPS
             .<Ratio (W/H)>
             .<Image prefix>
-            .<CurrentPart>
             .<FrameInterval>
 
             .Animation
@@ -48,7 +47,6 @@ $wpf.Button_Import.Add_Click({
         
         $desc | Add-Member NoteProperty Interval (1000/$desc.FPS)
         $desc | Add-Member NoteProperty Ratio ($desc.Width/$desc.Height)
-        $desc | Add-Member NoteProperty Part  0
         $TempPrefix = (Get-ChildItem $TempZip\part0).name | Select-Object -First 1
         $desc | Add-Member NoteProperty Prefix $TempPrefix.Substring(0, $TempPrefix.Length-5)
 
