@@ -1,8 +1,8 @@
-<Window
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    x:Name="ABP" Title="Android Boot Preview" WindowStartupLocation="CenterScreen"
-    Width="1440" Height="720" ShowInTaskbar="True">
+<Window Name="ABP"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Android Boot Preview" Height="720" Width="1440" FontSize="14">
+
     <Grid Margin="8">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
@@ -12,54 +12,79 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="2*" MaxHeight="150"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
 
-            <GroupBox Header="Import bootanimation.zip">
-                <StackPanel Margin="8" Name="StackPanel_Import">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="210"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox Name="TextBox_Filename"/>
-                        <Button  Name="Button_Filename" Content="Browse" Grid.Column="1" HorizontalAlignment="Right" Width="200"/>
-                    </Grid>
+            <GroupBox Margin="8">
+                <GroupBox.Header>
+                    <TextBlock FontWeight="Bold" Text="Import File"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="2*"/>
+                    </Grid.RowDefinitions>
 
-                    <Button Name="Button_Import" Content="Import File" Margin="0,8,0,0" Width="{Binding ElementName=StackPanel_Import, Path=ActualWidth}" HorizontalAlignment="Left"/>
-                </StackPanel>
+                    <GroupBox Margin="8" Header="(a) Import by .zip">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="128"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="TextBox_Filename"/>
+                            <Button  Name="Button_Filename" Content="Browse" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch"/>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Column="1" Margin="8" Header="(b) Import by Folder">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="128"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Name="TextBox_Foldername"/>
+                            <Button  Name="Button_Foldername" Content="Browse" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <Button Grid.Row="1" Grid.ColumnSpan="2" Name="Button_Import" Content="Import" Margin="8"/>
+                </Grid>
             </GroupBox>
 
-            <GroupBox Header="desc.txt" Grid.Row="1">
-                <TextBox Name="TextBox_desc" Margin="8" FontFamily="Courier New" FontSize="16" IsReadOnly="True" Background="#F6F6F6"/>
-            </GroupBox>
-
-            <GroupBox Header="Preview control" Grid.Row="2">
-                <StackPanel Margin="8">
-                    <UniformGrid Columns="6" MinWidth="750" HorizontalAlignment="Left" Margin="8,8,0,16">
-                        <TextBlock Text="Part"/>
-                        <TextBlock Text="Frame"/>
-                        <TextBlock Text="Screen Width"/>
+            <GroupBox Grid.Row="1" Margin="8">
+                <GroupBox.Header>
+                    <TextBlock FontWeight="Bold" Text="Tweak Preview"/>
+                </GroupBox.Header>
+                <DockPanel Margin="8">
+                    <TextBox DockPanel.Dock="Right" Name="TextBox_Desc" IsReadOnly="True" Width="300" Margin="0" Background="#F6F6F6" FontFamily="Courier New"/>
+                    <TextBlock DockPanel.Dock="Top" Text="This section allows tweaking the preview to fit various devices and boot scenarios." Margin="0,0,0,16"/>
+                    <UniformGrid DockPanel.Dock="Top" Columns="2" MinWidth="300" HorizontalAlignment="Left">
+                        <UniformGrid.Resources>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Background" Value="#00000000"/>
+                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            </Style>
+                        </UniformGrid.Resources>
+                        <TextBlock Text="Screen Width" MinHeight="24" MinWidth="196"/>
+                        <TextBox Name="TextBox_ScreenW" Text="1080"/>
                         <TextBlock Text="Screen Height"/>
-                        <TextBlock Text="Repeat when 0"/>
-                        <TextBlock/>
-                        <TextBlock Name="TextBlock_Part" Text="-1"/>
-                        <TextBlock Name="TextBlock_Frame" Text="-1"/>
-                        <TextBox   Name="TextBox_ScreenWidth" Text="1080" Margin="0,0,8,0"/>
-                        <TextBox   Name="TextBox_ScreenHeight" Text="1920" Margin="0,0,8,0"/>
-                        <TextBox   Name="TextBox_RepeatWhen0" Text="2" Margin="0,0,8,0"/>
-                        <Button    Name="Button_Update" Content="Update Layout" Width="150"/>
+                        <TextBox Name="TextBox_ScreenH" Text="1920"/>
+                        <TextBlock Text="REPEAT when REPEAT = 0"/>
+                        <TextBox Name="TextBox_Repeat" Text="2"/>
                     </UniformGrid>
-                    <UniformGrid Columns="5">
-                        <Button Name="Button_Reset"    Content="Reset" Margin="8"/>
-                        <Button Name="Button_PrevPart" Content="&lt;   Previous" Margin="8"/>
-                        <Button Name="Button_Play"     Content="Play" Margin="8"/>
-                        <Button Name="Button_Pause"    Content="Pause" Margin="8"/>
-                        <Button Name="Button_NextPart" Content="Next   &gt;" Margin="8"/>
-                    </UniformGrid>
-                </StackPanel>
+                    <Button Name="Button_Generate" Content="Generate Preview" Height="26" VerticalAlignment="Bottom" Margin="0,0,64,0"/>
+                </DockPanel>
+            </GroupBox>
+
+            <GroupBox Grid.Row="2" Margin="8">
+                <GroupBox.Header>
+                    <TextBlock FontWeight="Bold" Text="Play Preview"/>
+                </GroupBox.Header>
             </GroupBox>
         </Grid>
 
