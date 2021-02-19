@@ -15,7 +15,7 @@
             "name": "PowerShell: Launch Script",
             "type": "PowerShell",
             "request": "launch",
-            "script": "${workspaceFolder}/Loader-MT.ps1",
+            "script": "${workspaceFolder}/Loader.ps1",
             "cwd": "${workspaceFolder}"
         }
     ]
