@@ -76,7 +76,9 @@
                     <TextBlock Text="Screen Height"/>
                     <TextBox Name="TextBox_ScreenH" Text="1920"/>
                     <TextBlock Text="REPEAT when REPEAT = 0"/>
-                    <TextBox Name="TextBox_Repeat" Text="2"/>
+                    <TextBox Name="TextBox_Repeat" Text="10"/>
+                    <TextBlock Text="Boot Duration (ms)"/>
+                    <TextBox Name="TextBox_Boot" Text="5000"/>
                 </UniformGrid>
                 <Button Name="Button_Generate" Content="Generate Preview" Height="26" VerticalAlignment="Bottom" Margin="0,0,64,0"/>
             </DockPanel>
