@@ -81,33 +81,37 @@ $wpf.Button_Generate.Add_Click({
             if (($desc.Animation[$i].Type -ieq 'c') -and ($desc.Animation[$i].Repeat -eq 0)) {
                 # Process Infinite C loop
                 $script:Cutoff = [Math]::Round(($wpf.TextBox_Boot.Text - $PreviousPosition) / ($desc.Animation[$i].PartTime*1000)) * $desc.Animation[$i].PartTime*1000
-                $script:Cutoff = [Math]::Max(0, $Cutoff)
+                $script:Cutoff = [Math]::Max(10, $Cutoff)
                 $script:Cutoff = [Timespan]::FromMilliseconds($CutOff).ToString('hh\:mm\:ss\.ff')
 
                 & $ffmpegLocation `
                     -i "$tempLocation\$($i).avi" `
-                    -ss '00:00:00' `
+                    -ss '00:00:00.00' `
                     -to $CutOff `
                     -c copy `
                     "$tempLocation\$($i)_2.avi"
 
-                Copy-Item "$tempLocation\$($i)_2.avi" "$tempLocation\$($i).avi" -Force
-                Remove-Item "$tempLocation\$($i)_2.avi" -Force
+                # Slow down
+                Start-Sleep 1
+                Remove-Item "$tempLocation\$($i).avi" -Force
+                Rename-Item "$tempLocation\$($i)_2.avi" "$($i).avi" -Force
 
             } elseif ($desc.Animation[$i].Type -ieq 'p') {
                 # Process P loop
-                $script:Cutoff = [Math]::Max(0, $wpf.TextBox_Boot.Text - $PreviousPosition)
+                $script:Cutoff = [Math]::Max(10, $wpf.TextBox_Boot.Text - $PreviousPosition)
                 $script:Cutoff = [Timespan]::FromMilliseconds($CutOff).ToString('hh\:mm\:ss\:ff')
 
                 & $ffmpegLocation `
                     -i "$tempLocation\$($i).avi" `
-                    -ss '00:00:00' `
+                    -ss '00:00:00.00' `
                     -to $CutOff `
                     -c copy `
                     "$tempLocation\$($i)_2.avi"
 
-                Copy-Item "$tempLocation\$($i)_2.avi" "$tempLocation\$($i).avi" -Force
-                Remove-Item "$tempLocation\$($i)_2.avi" -Force
+                # Slow down
+                Start-Sleep 1
+                Remove-Item "$tempLocation\$($i).avi" -Force
+                Rename-Item "$tempLocation\$($i)_2.avi" "$($i).avi" -Force
             }
         }
 
@@ -116,10 +120,7 @@ $wpf.Button_Generate.Add_Click({
     })
 
     # Slow down
-    # Look at the time up on the wall
-    # The clock is tellin' it all wrong
-    # You got to slow down
-    Start-Sleep 2
+    Start-Sleep 4
 
     # Combine each part
     Clear-Content $tempLocation\partList.txt
