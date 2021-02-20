@@ -6,8 +6,8 @@ $wpf.Button_Filename.Add_Click({
     $Dialog = [Microsoft.Win32.OpenFileDialog]::New()
     $Dialog.Filter = 'Archives (.zip)|*.zip'
     if ($Dialog.ShowDialog()) {
-        $wpf.TextBox_Filename.Text = $Dialog.Filename
         $wpf.TextBox_Foldername.Text = ''
+        $wpf.TextBox_Filename.Text = $Dialog.Filename
     }
 })
 
@@ -22,7 +22,7 @@ $wpf.Button_Foldername.Add_Click({
 
 # Import file
 $wpf.Button_Import.Add_Click({
-    $Extracted    = $false
+    $Extracted = $false
     Set-Progress 0 'Extracting boot animation'
     if (($wpf.TextBox_Filename.Text -ne '') -and (Test-Path $wpf.TextBox_Filename.Text)) {
         # Extract .zip
