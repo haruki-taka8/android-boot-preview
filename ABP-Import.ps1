@@ -55,6 +55,7 @@ $wpf.Button_Import.Add_Click({
                 .Count
                 .Pause
                 .Path
+                .[#RGBHex]
                 .<PartTime>
         #>
         $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
@@ -69,13 +70,15 @@ $wpf.Button_Import.Add_Click({
         $i = 0
         (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
             $ThisLine = $_.Split(' ')
+
             $desc.Animation.Add(
                 [PSCustomObject] @{
                     Type     = $ThisLine[0]
                     Repeat   = $ThisLine[1]
                     Pause    = $ThisLine[2]
                     Path     = $ThisLine[3]
-                    PartTime = (Get-ChildItem "$tempLocation\part$($i)\").Count / $desc.FPS
+                    RGBHex   = $ThisLine.Where{$_[0] -eq '#'}
+                    PartTime = ((Get-ChildItem "$tempLocation\part$($i)\").Count+1) / $desc.FPS
                 }
             )
             $i++
