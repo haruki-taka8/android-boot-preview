@@ -27,13 +27,24 @@ $wpf.Button_Generate.Add_Click({
             "$tempLocation\part$($i)_front.avi"
 
         # Add blank background
-        # idk why but it has to be 2*$desc.Animation[$i].PartTime
+        # Get background color
+        if ($null -eq $desc.Animation[$i].RGBHex[0]) {
+            $script:RequiredColor = '#000000'
+        } else {
+            $script:RequiredColor = $desc.Animation[$i].RGBHex[0]
+        }
+
+        $RequiredPartTime = 2 * $desc.Animation[$i].PartTime
+        if ($i -eq $desc.Animation.Count-1) {
+            $RequiredPartTime += $desc.Animation[$i].Pause / $desc.FPS
+        }
+
         & $ffmpegLocation `
             -f lavfi `
-            -i color=black:s=$($ScreenW)x$($ScreenH) `
+            -i color=$($RequiredColor):s=$($ScreenW)x$($ScreenH) `
             -i "$tempLocation\part$($i)_front.avi" `
             -filter_complex "[0:v][1:v] overlay=$($OverlayX):$($OverlayY)" `
-            -t (2*$desc.Animation[$i].PartTime) `
+            -t $RequiredPartTime `
             -r $desc.FPS `
             "$tempLocation\part$($i).avi"
     }
@@ -67,5 +78,4 @@ $wpf.Button_Generate.Add_Click({
 
     Set-Progress 100 'Generation done'
 })
-
 # D:\Themes\Mass Android Theming\E257\bootanimation
