@@ -2,12 +2,14 @@
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
 $wpf.Button_Generate.Add_Click({
     # TODO: Input validation
+    Set-Progress 0 'Calculating helper variables'
     $ScreenW = $wpf.TextBox_ScreenW.Text
     $ScreenH = $wpf.TextBox_ScreenH.Text
     $OverlayX = ($ScreenW - $desc.Width) / 2
     $OverlayY = ($ScreenH - $desc.Height) / 2
 
     # Foreach part
+    Set-Progress 33 'Generating animation per part'
     for ($i = 0; $i -lt $desc.Animation.Count; $i++) {
         # Generate .avi for part
         # Generate Animation
@@ -38,6 +40,7 @@ $wpf.Button_Generate.Add_Click({
 
     # Merge all
     # Generate list of files to merge
+    Set-Progress 66 'Merging animations'
     [System.Collections.ArrayList] $Part = @()
     $desc.Animation.ForEach({
         if ($_.Repeat -eq 0) {
@@ -62,6 +65,7 @@ $wpf.Button_Generate.Add_Click({
             -i "$tempLocation\partList.txt" `
             "$tempLocation\result.avi"
 
+    Set-Progress 100 'Generation done'
 })
 
 # D:\Themes\Mass Android Theming\E257\bootanimation
