@@ -40,23 +40,21 @@ $wpf.Button_Import.Add_Click({
     if ($Extracted) {
         Set-Progress 50 'Comprehending desc.txt'
         $wpf.TextBox_Desc.Text = Get-Content $tempLocation\desc.txt -Raw
+
         # Prepare $desc variable from desc.txt
         $script:desc = [PSCustomObject] @{}
-        
         <# Fill $desc with data from desc.txt
-            .Text = Raw content
             .Width
             .Height
             .FPS
-            .<Ratio (W/H)>
-            .<FrameInterval>
             .Animation
                 .Type
                 .Count
                 .Pause
                 .Path
                 .[#RGBHex]
-                .<PartTime>
+                .<PartTime>  <-- Duration without Pause (seconds)
+                .<FullTime> <-- Duration w/ Repeat & Pause (seconds)
         #>
         $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
         $desc | Add-Member NoteProperty Width  $FirstLine[0]
@@ -64,10 +62,6 @@ $wpf.Button_Import.Add_Click({
         $desc | Add-Member NoteProperty FPS    $FirstLine[2]
         $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
 
-        $desc | Add-Member NoteProperty Interval (1000/$desc.FPS)
-        $desc | Add-Member NoteProperty Ratio ($desc.Width/$desc.Height)
-
-        $i = 0
         (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
             $ThisLine = $_.Split(' ')
 
@@ -78,10 +72,10 @@ $wpf.Button_Import.Add_Click({
                     Pause    = $ThisLine[2]
                     Path     = $ThisLine[3]
                     RGBHex   = $ThisLine.Where{$_[0] -eq '#'}
-                    PartTime = ((Get-ChildItem "$tempLocation\part$($i)\").Count+1) / $desc.FPS
+                    PartTime = ((Get-ChildItem "$tempLocation\$($ThisLine[3])\").Count+1) / $desc.FPS
+                    FullTime = 0
                 }
             )
-            $i++
         })
     }
 
