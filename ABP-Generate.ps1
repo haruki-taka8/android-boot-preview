@@ -9,7 +9,12 @@ $wpf.Button_Generate.Add_Click({
     $OverlayY = ($ScreenH - $desc.Height) / 2
 
     # Generate animation per line
-    $script:i = 0
+    # Generated files
+    # 0         = completed version of part
+    # 0_front   = unscaled part
+    # 0_front_2 = unscaled, repeated part
+
+    $i = 0
     $desc.Animation.ForEach({
         Set-Progress (100*($i+1)/($desc.Animation.Count+2)) 'Generating animation per part'
 
@@ -28,10 +33,13 @@ $wpf.Button_Generate.Add_Click({
             "$tempLocation\$($i)_front.avi"
 
         # Process REPEAT
-        $RequiredRepeat = $desc.Animation[$i].Repeat
+        $RequiredRepeat = $_.Repeat
         if ($RequiredRepeat -eq 0) {
             $RequiredRepeat = $wpf.TextBox_Repeat.Text
         }
+        
+        # Set Animation.FullTime (include PAUSE & REPEAT)
+        $_.FullTime = $_.PartTime*$RequiredRepeat + $_.Pause/$desc.FPS 
 
         Clear-Content $tempLocation\partList.txt
         for ($j = 0; $j -lt $RequiredRepeat; $j++) {
@@ -45,21 +53,18 @@ $wpf.Button_Generate.Add_Click({
             "$tempLocation\$($i)_front_2.avi"
 
         # Append overlay to background
-        if ($null -eq $desc.Animation[$i].RGBHex[0]) {
-            $script:RequiredColor = '#000000'
+        if ($null -eq $_.RGBHex[0]) {
+            $RequiredColor = '#000000'
         } else {
-            $script:RequiredColor = $desc.Animation[$i].RGBHex[0]
+            $RequiredColor = $_.RGBHex[0]
         }
-
-        # Set Animation.FullTime (include PAUSE & REPEAT)
-        $desc.Animation[$i].FullTime = $desc.Animation[$i].PartTime*$RequiredRepeat +$desc.Animation[$i].Pause/$desc.FPS 
 
         & $ffmpegLocation `
             -f lavfi `
             -i color=$($RequiredColor):s=$($ScreenW)x$($ScreenH) `
             -i "$tempLocation\$($i)_front_2.avi" `
             -filter_complex "[0:v][1:v] overlay=$($OverlayX):$($OverlayY)" `
-            -t $desc.Animation[$i].FullTime `
+            -t $_.FullTime `
             "$tempLocation\$($i).avi"
 
         # Remove unused $i_front_*.avi
@@ -68,61 +73,44 @@ $wpf.Button_Generate.Add_Click({
     })
 
     # Process BOOTTIME
-    $script:CurrentPosition = 0 # ms
-    $script:PreviousPosition = 0 # ms
-    $script:Cutoff = 0
-    $script:i = 0
-
+    Start-Sleep 5
+    $PreviousPosition = $Cutoff = $i = 0
+    
     $desc.Animation.ForEach({
-        $CurrentPosition += $desc.Animation[$i].FullTime*1000 # ms
+        if (($PreviousPosition + $_.FullTime*1000) -gt $wpf.TextBox_Boot.Text) {
+            $ToCut = $false
+            if (($_.Type -ieq 'c') -and ($_.Repeat -eq 0)) {
+                # Infinite C loop: round to nearest PartTime
+                $Cutoff = [Math]::Round(($wpf.TextBox_Boot.Text - $PreviousPosition) / ($_.PartTime*1000)) * $_.PartTime*1000
+                $ToCut  = $true
+            } elseif ($_.Type -ieq 'p') {
+                # P loop
+                $Cutoff = $wpf.TextBox_Boot.Text - $PreviousPosition
+                $ToCut  = $true
+            }
+            if ($ToCut) {
+                if ($CutOff -gt 0) {
+                    $Cutoff = [Timespan]::FromMilliseconds($CutOff).ToString('hh\:mm\:ss\.ff')
+                    & $ffmpegLocation `
+                        -i "$tempLocation\$($i).avi" `
+                        -ss '00:00:00.00' `
+                        -to $CutOff `
+                        -c copy `
+                        "$tempLocation\$($i)_2.avi" | Out-Null
 
-        if ($CurrentPosition -gt $wpf.TextBox_Boot.Text) {
-
-            if (($desc.Animation[$i].Type -ieq 'c') -and ($desc.Animation[$i].Repeat -eq 0)) {
-                # Process Infinite C loop
-                $script:Cutoff = [Math]::Round(($wpf.TextBox_Boot.Text - $PreviousPosition) / ($desc.Animation[$i].PartTime*1000)) * $desc.Animation[$i].PartTime*1000
-                $script:Cutoff = [Math]::Max(10, $Cutoff)
-                $script:Cutoff = [Timespan]::FromMilliseconds($CutOff).ToString('hh\:mm\:ss\.ff')
-
-                & $ffmpegLocation `
-                    -i "$tempLocation\$($i).avi" `
-                    -ss '00:00:00.00' `
-                    -to $CutOff `
-                    -c copy `
-                    "$tempLocation\$($i)_2.avi"
-
-                # Slow down
-                Start-Sleep 1
-                Remove-Item "$tempLocation\$($i).avi" -Force
-                Rename-Item "$tempLocation\$($i)_2.avi" "$($i).avi" -Force
-
-            } elseif ($desc.Animation[$i].Type -ieq 'p') {
-                # Process P loop
-                $script:Cutoff = [Math]::Max(10, $wpf.TextBox_Boot.Text - $PreviousPosition)
-                $script:Cutoff = [Timespan]::FromMilliseconds($CutOff).ToString('hh\:mm\:ss\:ff')
-
-                & $ffmpegLocation `
-                    -i "$tempLocation\$($i).avi" `
-                    -ss '00:00:00.00' `
-                    -to $CutOff `
-                    -c copy `
-                    "$tempLocation\$($i)_2.avi"
-
-                # Slow down
-                Start-Sleep 1
-                Remove-Item "$tempLocation\$($i).avi" -Force
-                Rename-Item "$tempLocation\$($i)_2.avi" "$($i).avi" -Force
+                    Remove-Item "$tempLocation\$($i).avi" -Force
+                    Rename-Item "$tempLocation\$($i)_2.avi" "$($i).avi" -Force
+                } else {
+                    Remove-Item "$tempLocation\$($i).avi" -Force
+                }
             }
         }
-
-        $PreviousPosition += $desc.Animation[$i].FullTime*1000 # ms
+        $PreviousPosition += $_.FullTime*1000 # ms
         $i++
     })
 
-    # Slow down
-    Start-Sleep 4
-
     # Combine each part
+    Start-Sleep 5
     Clear-Content $tempLocation\partList.txt
     (Get-ChildItem "$tempLocation\*.avi").FullName.ForEach({
         "file `'$_`'" | Out-File $tempLocation\partList.txt -Append -Encoding ASCII
