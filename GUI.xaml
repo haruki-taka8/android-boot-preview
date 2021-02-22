@@ -1,119 +1,115 @@
 <Window Name="ABP"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Android Boot Preview" Height="720" Width="1440" FontSize="14">
+        Title="Android Boot Preview" Height="540" Width="1200" FontSize="20">
 
-    <Grid Margin="8">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="10"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*" MaxHeight="150"/>
-            <RowDefinition Height="4*"/>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="16"/>
-        </Grid.RowDefinitions>
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Height" Value="0"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="#00000000"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+    </Window.Resources>
 
-        <!-- File Import -->
-        <GroupBox Margin="8">
-            <GroupBox.Header>
-                <TextBlock FontWeight="Bold" Text="Import File"/>
-            </GroupBox.Header>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
+    <TabControl BorderThickness="0" Name="TabControl_Main">
+        <!-- Landing page -->
+        <TabItem>
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <TextBlock Text="Welcome to android-boot-preview!" FontWeight="Bold" Margin="0,0,0,24" HorizontalAlignment="Center"/>
+                <TextBlock Text="Generate a boot animation preview in three simple steps!" HorizontalAlignment="Center"/>
+                <TextBlock Text="Import ・ Customize ・ Preview" HorizontalAlignment="Center" Margin="0,0,0,115"/>
+                <Button Name="Button_Goto1" Content="Start" Width="256" Height="32"/>
+            </StackPanel>
+        </TabItem>
 
-                <GroupBox Margin="8" Header="(a) Import by .zip">
+        <!-- Import -->
+        <TabItem>
+            <StackPanel Margin="32">
+                <TextBlock Text="1/3 ・ Import" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Import from either a .zip file or a directory" Margin="0,0,0,32" HorizontalAlignment="Center"/>
+
+                <GroupBox Margin="32" Header="(a) Import a .zip">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="128"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Name="TextBox_Filename"/>
                         <Button  Name="Button_Filename" Content="Browse" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch"/>
                     </Grid>
                 </GroupBox>
-                <GroupBox Grid.Column="1" Margin="8" Header="(b) Import by Folder">
+                <GroupBox Margin="32,0,32,32" Header="(b) Import a directory">
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="128"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Name="TextBox_Foldername"/>
                         <Button  Name="Button_Foldername" Content="Browse" Grid.Column="1" Margin="8,0,0,0" HorizontalAlignment="Stretch"/>
                     </Grid>
                 </GroupBox>
+                <Button Name="Button_Goto2" Content="Import" Width="256" Height="32"/>
+            </StackPanel>
+        </TabItem>
 
-                <Button Grid.Row="1" Grid.ColumnSpan="2" Name="Button_Import" Content="Import" Margin="8" MaxHeight="26"/>
-            </Grid>
-        </GroupBox>
+        <!-- Importing -->
+        <TabItem>
+            <StackPanel Margin="32">
+                <TextBlock Text="1/3 ・ Import" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Currently importing your selected file..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Name="TextBlock_BigFile" Text="Your file looks big - it might take a while."  HorizontalAlignment="Center"/>
+                <TextBlock Name="TextBlock_BigFile_2" Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Name="TextBlock_Loading" Text="..." HorizontalAlignment="Center"/>
+            </StackPanel>
+        </TabItem>
 
-        <!-- Preview Tweak -->
-        <GroupBox Grid.Row="1" Margin="8">
-            <GroupBox.Header>
-                <TextBlock FontWeight="Bold" Text="Tweak Preview"/>
-            </GroupBox.Header>
-            <DockPanel Margin="8">
-                <TextBox DockPanel.Dock="Right" Name="TextBox_Desc" IsReadOnly="True" Width="300" Margin="0" Background="#F6F6F6" FontFamily="Courier New"/>
-                <TextBlock DockPanel.Dock="Top" Text="This section allows tweaking the preview to fit various devices and boot scenarios." Margin="0,0,0,16"/>
-                <UniformGrid DockPanel.Dock="Top" Columns="2" MinWidth="300" HorizontalAlignment="Left">
-                    <UniformGrid.Resources>
-                        <Style TargetType="TextBox">
-                            <Setter Property="Background" Value="#00000000"/>
-                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                        </Style>
-                    </UniformGrid.Resources>
-                    <TextBlock Text="Screen Width" MinHeight="24" MinWidth="196"/>
+        <!-- Customize -->
+        <TabItem>
+            <StackPanel Margin="32">
+                <TextBlock Text="2/3 ・ Customize" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Tweak your preview with the following settings" Margin="0,0,0,32" HorizontalAlignment="Center"/>
+
+                <UniformGrid DockPanel.Dock="Top" Columns="2" MinWidth="512" HorizontalAlignment="Center" Margin="0,0,0,24">
+                    <TextBlock Text="Screen Width" MinHeight="24"/>
                     <TextBox Name="TextBox_ScreenW" Text="1080"/>
                     <TextBlock Text="Screen Height"/>
                     <TextBox Name="TextBox_ScreenH" Text="1920"/>
-                    <TextBlock Text="REPEAT when REPEAT = 0"/>
-                    <TextBox Name="TextBox_Repeat" Text="10"/>
                     <TextBlock Text="Boot Duration (ms)"/>
                     <TextBox Name="TextBox_Boot" Text="5000"/>
                 </UniformGrid>
-                <Button Name="Button_Generate" Content="Generate Preview" Height="26" VerticalAlignment="Bottom" Margin="0,0,64,0"/>
-            </DockPanel>
-        </GroupBox>
 
-        <!-- Playback Control -->
-        <GroupBox Grid.Row="2" Margin="8">
-            <GroupBox.Header>
-                <TextBlock FontWeight="Bold" Text="Play Preview"/>
-            </GroupBox.Header>
+                <Expander Header="Advanced" MinWidth="512" Margin="0,0,0,87" HorizontalAlignment="Center">
+                    <UniformGrid DockPanel.Dock="Top" Columns="2">
+                        <TextBlock Text="REPEAT when REPEAT = 0"/>
+                        <TextBox Name="TextBox_Repeat" Text="10"/>
+                    </UniformGrid>
+                </Expander>
+                <Button Name="Button_Goto3" Content="Generate Preview" Width="256" Height="32"/>
+            </StackPanel>
+        </TabItem>
 
-            <Grid Margin="8">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Button Name="Button_Play" Content="Play Preview" Height="36" Margin="16"/>
-                <CheckBox Name="CheckBox_Repeat" Content="Repeat playback" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="False"/>
-            </Grid>
-        </GroupBox>
+        <!-- Generating -->
+        <TabItem>
+            <StackPanel Margin="32">
+                <TextBlock Text="3/3 ・ Preview" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Currently generating your preview..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Text="This might take a while depending on your GPU."  HorizontalAlignment="Center"/>
+                <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <ProgressBar Name="ProgressBar_Status" Margin="64" MinHeight="20"/>
+            </StackPanel>
+        </TabItem>
 
         <!-- Preview -->
-        <Grid Grid.Column="2" Grid.RowSpan="3" Name="Grid_PreviewBackground" Background="Black" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <TextBlock Text="Boot Animation Preview" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <MediaElement Name="Media_Preview" Stretch="UniformToFill"/>
-        </Grid>
-
-        <!-- Statusbar -->
-        <Grid Background="#F1EDED" Grid.Row="3" Grid.ColumnSpan="3" Margin="-8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="4*"/>
-            </Grid.ColumnDefinitions>
-            <TextBlock Name="TextBlock_Status" Text="Android Boot Preview" Margin="16,8,8,8"/>
-            <ProgressBar Name="Progress_Status" Grid.Column="1" Margin="8"/>
-        </Grid>
-    </Grid>
+        <TabItem>
+            <DockPanel Margin="32">
+                <TextBlock DockPanel.Dock="Top" Text="3/3 ・ Preview" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock DockPanel.Dock="Top" Text="Your preview is ready!" Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <Button DockPanel.Dock="Top" Name="Button_Play" Content="Play" Width="{Binding ElementName=Media_Preview, Path=ActualWidth}"/>
+                <MediaElement Name="Media_Preview" Stretch="Uniform"/>
+            </DockPanel>
+        </TabItem>
+    </TabControl>
 </Window>
