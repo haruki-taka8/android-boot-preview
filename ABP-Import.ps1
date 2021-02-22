@@ -21,63 +21,56 @@ $wpf.Button_Foldername.Add_Click({
 })
 
 # Import file
-$wpf.Button_Import.Add_Click({
-    $Extracted = $false
-    Set-Progress 0 'Extracting boot animation'
-    if (($wpf.TextBox_Filename.Text -ne '') -and (Test-Path $wpf.TextBox_Filename.Text)) {
-        # Extract .zip
-        $Extracted = $true
-        Remove-Item $tempLocation -Recurse -Force
-        Expand-Archive $wpf.TextBox_Filename.Text $tempLocation -Force
+$wpf.Button_Goto2.Add_Click({
+    $wpf.TabControl_Main.SelectedIndex = 2
+    Update-GUI
 
-    } elseif (($wpf.TextBox_Foldername.Text -ne '') -and (Test-Path $wpf.TextBox_Foldername.Text)) {
-        # Extract folder
-        $Extracted = $true
-        Remove-Item $tempLocation -Recurse -Force
-        Copy-Item $wpf.TextBox_Foldername.Text $tempLocation -Recurse
-    }
+    # Call helper
+    Start-Job -FilePath .\ABP-Import-Helper.ps1 -ArgumentList `
+        $tempLocation,
+        $wpf.TextBox_Filename.Text,
+        $wpf.TextBox_Foldername.Text
 
-    if ($Extracted) {
-        Set-Progress 50 'Comprehending desc.txt'
-        $wpf.TextBox_Desc.Text = Get-Content $tempLocation\desc.txt -Raw
+    # Display loading text while loading
+    do {
+        $wpf.TextBlock_Loading.Text = 
+            '.' * ($wpf.TextBlock_Loading.Text.Length % 3 + 1)
+        Update-GUI
+        Start-Sleep 1
+    } until (Test-Path "$tempLocation\import.dat")
 
-        # Prepare $desc variable from desc.txt
-        $script:desc = [PSCustomObject] @{}
-        <# Fill $desc with data from desc.txt
-            .Width
-            .Height
-            .FPS
-            .Animation
-                .Type
-                .Count
-                .Pause
-                .Path
-                .[#RGBHex]
-                .<PartTime>  <-- Duration without Pause (seconds)
-                .<FullTime> <-- Duration w/ Repeat & Pause (seconds)
-        #>
-        $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
-        $desc | Add-Member NoteProperty Width  $FirstLine[0]
-        $desc | Add-Member NoteProperty Height $FirstLine[1]
-        $desc | Add-Member NoteProperty FPS    $FirstLine[2]
-        $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
-
-        (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
-            $ThisLine = $_.Split(' ')
-
-            $desc.Animation.Add(
-                [PSCustomObject] @{
-                    Type     = $ThisLine[0]
-                    Repeat   = $ThisLine[1]
-                    Pause    = $ThisLine[2]
-                    Path     = $ThisLine[3]
-                    RGBHex   = $ThisLine.Where{$_[0] -eq '#'}
-                    PartTime = ((Get-ChildItem "$tempLocation\$($ThisLine[3])\").Count+1) / $desc.FPS
-                    FullTime = 0
-                }
-            )
-        })
-    }
-
-    Set-Progress 100 'Import done'
+    <# Fill $desc with data from desc.txt
+    .Width
+    .Height
+    .FPS
+    .Animation
+        .Type
+        .Count
+        .Pause
+        .Path
+        .[#RGBHex]
+        .<PartTime>  <-- Duration without Pause (seconds)
+        .<FullTime> <-- Duration w/ Repeat & Pause (seconds)
+    #>
+    $script:desc = [PSCustomObject] @{}
+    $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
+    $desc | Add-Member NoteProperty Width  $FirstLine[0]
+    $desc | Add-Member NoteProperty Height $FirstLine[1]
+    $desc | Add-Member NoteProperty FPS    $FirstLine[2]
+    $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
+    (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
+        $ThisLine = $_.Split(' ')
+        $desc.Animation.Add(
+            [PSCustomObject] @{
+                Type     = $ThisLine[0]
+                Repeat   = $ThisLine[1]
+                Pause    = $ThisLine[2]
+                Path     = $ThisLine[3]
+                RGBHex   = $ThisLine.Where{$_[0] -eq '#'}
+                PartTime = ((Get-ChildItem "$tempLocation\$($ThisLine[3])\").Count+1) / $desc.FPS
+                FullTime = 0
+            }
+        )
+    })
+    $wpf.TabControl_Main.SelectedIndex = 3
 })
