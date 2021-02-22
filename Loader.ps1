@@ -4,7 +4,8 @@
 #>
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
 # VARIABLES
-$ffmpegLocation = 'ffmpeg.exe'
+# $ffmpegLocation = 'E:\Path\ffmpeg-4.3.2-2021-02-20-essentials_build\bin\ffmpeg.exe'
+$ffmpegLocation = 'INSERT-PATH-TO-FFMPEG\ffmpeg.exe'
 $TempLocation = "$PSScriptRoot\Temp\"
 
 # Basic settings
@@ -19,10 +20,21 @@ $xaml.SelectNodes("//*[@*[contains(translate(name(.),'n','N'),'Name')]]").Name.
     ForEach({$wpf.Add($_, $tempform.FindName($_))})
 
 # Import GUI Control functions
-Import-Module "$PSScriptRoot\ABP-Functions.ps1",
-              "$PSScriptRoot\ABP-Import.ps1",
-              "$PSScriptRoot\ABP-Generate.ps1",
-              "$PSScriptRoot\ABP-Playback.ps1"
+function Update-GUI {
+    $wpf.ABP.Dispatcher.Invoke(
+        [Windows.Threading.DispatcherPriority]::Background, [action]{})
+}
+
+Import-Module "$PSScriptRoot\ABP-Import.ps1",
+              "$PSScriptRoot\ABP-Generate.ps1"
+
+$wpf.Button_Goto1.Add_Click({$wpf.TabControl_Main.SelectedIndex = 1})
+$wpf.Button_Play.Add_Click({
+    $wpf.Media_Preview.LoadedBehavior = "Manual"
+    $wpf.Media_Preview.UnloadedBehavior = "Manual"
+    $wpf.Media_Preview.Play()
+})
+
 
 # Cleanup on close
 $wpf.ABP.Add_Closing({Remove-Module 'ABP-*'})
