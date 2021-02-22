@@ -1,8 +1,9 @@
 # Handles everything related to generating the preview
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
-$wpf.Button_Generate.Add_Click({
+$wpf.Button_Goto3.Add_Click({
     # TODO: Input validation
-    Set-Progress 0 'Calculating helper variables'
+    $wpf.TabControl_Main.SelectedIndex = 4
+    Update-GUI
     $ScreenW = $wpf.TextBox_ScreenW.Text
     $ScreenH = $wpf.TextBox_ScreenH.Text
     $OverlayX = ($ScreenW - $desc.Width) / 2
@@ -16,7 +17,8 @@ $wpf.Button_Generate.Add_Click({
 
     $i = 0
     $desc.Animation.ForEach({
-        Set-Progress (100*($i+1)/($desc.Animation.Count+2)) 'Generating animation per part'
+        $wpf.ProgressBar_Status.Value = (100*($i+1)/($desc.Animation.Count+2))
+        Update-GUI
 
         # Generate overlay
         '#' | Out-File $tempLocation\partList.txt -Encoding ASCII
@@ -37,7 +39,7 @@ $wpf.Button_Generate.Add_Click({
         if ($RequiredRepeat -eq 0) {
             $RequiredRepeat = $wpf.TextBox_Repeat.Text
         }
-        
+
         # Set Animation.FullTime (include PAUSE & REPEAT)
         $_.FullTime = $_.PartTime*$RequiredRepeat + $_.Pause/$desc.FPS 
 
@@ -73,9 +75,9 @@ $wpf.Button_Generate.Add_Click({
     })
 
     # Process BOOTTIME
-    Start-Sleep 5
+    Start-Sleep 3
     $PreviousPosition = $Cutoff = $i = 0
-    
+
     $desc.Animation.ForEach({
         if (($PreviousPosition + $_.FullTime*1000) -gt $wpf.TextBox_Boot.Text) {
             $ToCut = $false
@@ -110,7 +112,8 @@ $wpf.Button_Generate.Add_Click({
     })
 
     # Combine each part
-    Start-Sleep 5
+    $wpf.ProgressBar_Status.Value = (100*($i+2)/($desc.Animation.Count+2))
+    Start-Sleep 3
     Clear-Content $tempLocation\partList.txt
     (Get-ChildItem "$tempLocation\*.avi").FullName.ForEach({
         "file `'$_`'" | Out-File $tempLocation\partList.txt -Append -Encoding ASCII
@@ -122,6 +125,6 @@ $wpf.Button_Generate.Add_Click({
             -i "$tempLocation\partList.txt" `
             "$tempLocation\result.avi"
 
-    Set-Progress 100 'Generation done'
+    $wpf.Media_Preview.Source = "$TempLocation\result.avi"
+    $wpf.TabControl_Main.SelectedIndex = 5
 })
-# D:\Themes\Mass Android Theming\E257\bootanimation
