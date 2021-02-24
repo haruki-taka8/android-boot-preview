@@ -31,10 +31,8 @@ $wpf.Button_Goto2.Add_Click({
         $wpf.TextBox_Filename.Text,
         $wpf.TextBox_Foldername.Text
 
-    # Display loading text while loading
+    # Watch file change
     do {
-        $wpf.TextBlock_Loading.Text = 
-            '.' * ($wpf.TextBlock_Loading.Text.Length % 3 + 1)
         Update-GUI
         Start-Sleep 1
     } until (Test-Path "$tempLocation\import.dat")
