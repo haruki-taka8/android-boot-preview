@@ -5,8 +5,8 @@
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
 # VARIABLES
 # $ffmpegLocation = 'E:\Path\ffmpeg-4.3.2-2021-02-20-essentials_build\bin\ffmpeg.exe'
-$ffmpegLocation = 'INSERT-PATH-TO-FFMPEG\ffmpeg.exe'
-$TempLocation = "$PSScriptRoot\Temp\"
+$script:ffmpegLocation = 'INSERT-PATH-TO-FFMPEG\ffmpeg.exe'
+$script:tempLocation = "$PSScriptRoot\Temp\"
 
 # Basic settings
 Set-Location $PSScriptRoot
