@@ -60,9 +60,11 @@
             <StackPanel Margin="32">
                 <TextBlock Text="1/3 ・ Import" FontWeight="Bold" HorizontalAlignment="Center"/>
                 <TextBlock Text="Currently importing your selected file..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
-                <TextBlock Name="TextBlock_BigFile" Text="Your file looks big - it might take a while."  HorizontalAlignment="Center"/>
-                <TextBlock Name="TextBlock_BigFile_2" Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
-                <TextBlock Name="TextBlock_Loading" Text="..." HorizontalAlignment="Center"/>
+                <StackPanel Margin="0" Name="StackPanel_BigFile">
+                    <TextBlock Text="Your file looks big - it might take a while."  HorizontalAlignment="Center"/>
+                    <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                </StackPanel>
+                <ProgressBar Margin="64" MinHeight="20" IsIndeterminate="True"/>
             </StackPanel>
         </TabItem>
 
