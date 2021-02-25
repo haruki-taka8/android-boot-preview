@@ -59,12 +59,14 @@
         <TabItem>
             <StackPanel Margin="32">
                 <TextBlock Text="1/3 ・ Import" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Currently importing your selected file..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Text="Importing your selected file..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Text="This window looks unresponsive..." HorizontalAlignment="Center"/>
+                <TextBlock Text="because I don't know how to multithread it!" Margin="0,0,0,64" HorizontalAlignment="Center"/>
+                
                 <StackPanel Margin="0" Name="StackPanel_BigFile">
-                    <TextBlock Text="Your file looks big - it might take a while."  HorizontalAlignment="Center"/>
+                    <TextBlock Text="Your file looks big. It might take a while."  HorizontalAlignment="Center"/>
                     <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
                 </StackPanel>
-                <ProgressBar Margin="64" MinHeight="20" IsIndeterminate="True"/>
             </StackPanel>
         </TabItem>
 
@@ -97,7 +99,7 @@
         <TabItem>
             <StackPanel Margin="32">
                 <TextBlock Text="3/3 ・ Preview" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Currently generating your preview..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
+                <TextBlock Text="Generating your preview..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
                 <TextBlock Text="This might take a while depending on your GPU."  HorizontalAlignment="Center"/>
                 <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
                 <ProgressBar Name="ProgressBar_Status" Margin="64" MinHeight="20"/>
