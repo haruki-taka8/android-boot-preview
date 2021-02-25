@@ -17,7 +17,7 @@ $wpf.Button_Goto3.Add_Click({
 
     $i = 0
     $desc.Animation.ForEach({
-        $wpf.ProgressBar_Status.Value = (100*($i+1)/($desc.Animation.Count+2))
+        $wpf.ProgressBar_Status.Value = (100*$i/$desc.Animation.Count)
         Update-GUI
 
         # Generate overlay
@@ -75,8 +75,7 @@ $wpf.Button_Goto3.Add_Click({
     })
 
     # Process BOOTTIME
-    Start-Sleep 3
-    $PreviousPosition = $Cutoff = $i = 0
+    $PreviousPosition = $i = 0
 
     $desc.Animation.ForEach({
         if (($PreviousPosition + $_.FullTime*1000) -gt $wpf.TextBox_Boot.Text) {
@@ -112,8 +111,6 @@ $wpf.Button_Goto3.Add_Click({
     })
 
     # Combine each part
-    $wpf.ProgressBar_Status.Value = (100*($i+2)/($desc.Animation.Count+2))
-    Start-Sleep 3
     Clear-Content $tempLocation\partList.txt
     (Get-ChildItem "$tempLocation\*.avi").FullName.ForEach({
         "file `'$_`'" | Out-File $tempLocation\partList.txt -Append -Encoding ASCII
@@ -127,4 +124,5 @@ $wpf.Button_Goto3.Add_Click({
 
     $wpf.Media_Preview.Source = "$TempLocation\result.avi"
     $wpf.TabControl_Main.SelectedIndex = 5
+    Update-GUI
 })
