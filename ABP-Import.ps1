@@ -23,52 +23,61 @@ $wpf.Button_Foldername.Add_Click({
 # Import file
 $wpf.Button_Goto2.Add_Click({
     $wpf.TabControl_Main.SelectedIndex = 2
+    $wpf.StackPanel_BigFile.Visibility = 'Hidden'
     Update-GUI
 
-    # Call helper
-    Start-Job -FilePath .\ABP-Import-Helper.ps1 -ArgumentList `
-        $tempLocation,
-        $wpf.TextBox_Filename.Text,
-        $wpf.TextBox_Foldername.Text
+    $ZipLocation = $wpf.TextBox_Filename.Text
+    $FolderLocation = $wpf.TextBox_Foldername.Text
 
-    # Watch file change
-    do {
-        Update-GUI
-        Start-Sleep 1
-    } until (Test-Path "$tempLocation\import.dat")
+    if (Test-Path $tempLocation) {Remove-Item $tempLocation -Recurse -Force}
 
-    <# Fill $desc with data from desc.txt
-    .Width
-    .Height
-    .FPS
-    .Animation
-        .Type
-        .Count
-        .Pause
-        .Path
-        .[#RGBHex]
-        .<PartTime>  <-- Duration without Pause (seconds)
-        .<FullTime> <-- Duration w/ Repeat & Pause (seconds)
-    #>
-    $script:desc = [PSCustomObject] @{}
-    $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
-    $desc | Add-Member NoteProperty Width  $FirstLine[0]
-    $desc | Add-Member NoteProperty Height $FirstLine[1]
-    $desc | Add-Member NoteProperty FPS    $FirstLine[2]
-    $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
-    (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
-        $ThisLine = $_.Split(' ')
-        $desc.Animation.Add(
-            [PSCustomObject] @{
+    # I hate Test-Path because it makes r/badcode.
+    if (($ZipLocation -ne '') -and (Test-Path $ZipLocation)) {
+        Test-Path $ZipLocation
+        if ((Get-ChildItem $ZipLocation).Length -gt 42MB) {
+            $wpf.StackPanel_BigFile.Visibility = 'Visible'
+        }
+        Expand-Archive $ZipLocation $tempLocation -Force
+    }
+    
+    if (($FolderLocation -ne '') -and (Test-path $FolderLocaion)) {
+        Test-Path $FolderLocation
+        if ((Get-ChildItem $FolderLocation).Length -gt 42MB) {
+            $wpf.StackPanel_BigFile.Visibility = 'Visible'
+        }
+        Copy-Item $FolderLocation $tempLocation -Recurse
+    }
+
+    if (Test-Path "$tempLocation\desc.txt") {
+        <# Populate $desc with data from desc.txt
+            .Width    .Height    .FPS
+            .Animation
+                .Type    .Count    .Pause    .Path    .[#RGBHex]
+                         .PartTime <- Duration w/o Pause (s)
+                         .FullTime <- Duration w/ Repeat & Pause (s)
+        #>
+        $script:desc = [PSCustomObject] @{}
+        $FirstLine = (Get-Content $tempLocation\desc.txt -First 1).Split(' ')
+        $desc | Add-Member NoteProperty Width  $FirstLine[0]
+        $desc | Add-Member NoteProperty Height $FirstLine[1]
+        $desc | Add-Member NoteProperty FPS    $FirstLine[2]
+        $desc | Add-Member NoteProperty Animation ([System.Collections.ArrayList] @())
+
+        (Get-Content $tempLocation\desc.txt | Select-Object -Skip 1).ForEach({
+            $ThisLine = $_.Split(' ')
+
+            $desc.Animation.Add([PSCustomObject] @{
                 Type     = $ThisLine[0]
                 Repeat   = $ThisLine[1]
                 Pause    = $ThisLine[2]
                 Path     = $ThisLine[3]
                 RGBHex   = $ThisLine.Where{$_[0] -eq '#'}
-                PartTime = ((Get-ChildItem "$tempLocation\$($ThisLine[3])\").Count+1) / $desc.FPS
+                PartTime = (Get-ChildItem "$tempLocation\$($ThisLine[3])\").Count / $desc.FPS
                 FullTime = 0
-            }
-        )
-    })
-    $wpf.TabControl_Main.SelectedIndex = 3
+            })
+        })
+
+        $wpf.TabControl_Main.SelectedIndex = 3
+        Update-GUI
+    }
 })
