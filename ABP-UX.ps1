@@ -41,8 +41,8 @@ $wpf.Button_Goto3.Add_Click({
     New-Preview `
         -ScreenW $wpf.TextBox_ScreenW.Text `
         -ScreenH $wpf.TextBox_ScreenH.Text `
-        -RepeatCount $wpf.TextBox_Repeat.Text `
-        -BootTime $wpf.TextBox_Boot.Text
+        -BootTime $wpf.TextBox_Boot.Text `
+        -RepeatCount $wpf.TextBox_Repeat.Text
 
     $wpf.Media_Preview.Source = "$TempLocation\result.avi"
     $wpf.TabControl_Main.SelectedIndex = 5
