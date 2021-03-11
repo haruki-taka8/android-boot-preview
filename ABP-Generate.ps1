@@ -4,8 +4,8 @@ function New-Preview {
     param (
         [Parameter(Mandatory)][Int] $ScreenW,
         [Parameter(Mandatory)][Int] $ScreenH,
-        [Parameter(Mandatory)][Int] $RepeatCount,
-        [Parameter(Mandatory)][Int] $BootTime
+        [Parameter(Mandatory)][Int] $BootTime,
+        [Parameter(Mandatory)][Int] $RepeatCount
     )
 
     # Generate animation per line
