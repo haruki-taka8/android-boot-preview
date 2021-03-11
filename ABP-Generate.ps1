@@ -1,13 +1,12 @@
 # Handles everything related to generating the preview
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
-$wpf.Button_Goto3.Add_Click({
-    # TODO: Input validation
-    $wpf.TabControl_Main.SelectedIndex = 4
-    Update-GUI
-    $ScreenW = $wpf.TextBox_ScreenW.Text
-    $ScreenH = $wpf.TextBox_ScreenH.Text
-    $OverlayX = ($ScreenW - $desc.Width) / 2
-    $OverlayY = ($ScreenH - $desc.Height) / 2
+function New-Preview {
+    param (
+        [Parameter(Mandatory)][Int] $ScreenW,
+        [Parameter(Mandatory)][Int] $ScreenH,
+        [Parameter(Mandatory)][Int] $RepeatCount,
+        [Parameter(Mandatory)][Int] $BootTime
+    )
 
     # Generate animation per line
     # Generated files
@@ -15,11 +14,10 @@ $wpf.Button_Goto3.Add_Click({
     # 0_front   = unscaled part
     # 0_front_2 = unscaled, repeated part
 
+    $OverlayX = ($ScreenW - $desc.Width) / 2
+    $OverlayY = ($ScreenH - $desc.Height) / 2
     $i = 0
     $desc.Animation.ForEach({
-        $wpf.ProgressBar_Status.Value = (100*$i/$desc.Animation.Count)
-        Update-GUI
-
         # Generate overlay
         '#' | Out-File $tempLocation\partList.txt -Encoding ASCII
         (Get-ChildItem "$tempLocation\$($_.Path)\*.png").FullName.ForEach({
@@ -37,7 +35,7 @@ $wpf.Button_Goto3.Add_Click({
         # Process REPEAT
         $RequiredRepeat = $_.Repeat
         if ($RequiredRepeat -eq 0) {
-            $RequiredRepeat = $wpf.TextBox_Repeat.Text
+            $RequiredRepeat = $RepeatCount
         }
 
         # Set Animation.FullTime (include PAUSE & REPEAT)
@@ -78,15 +76,15 @@ $wpf.Button_Goto3.Add_Click({
     $PreviousPosition = $i = 0
 
     $desc.Animation.ForEach({
-        if (($PreviousPosition + $_.FullTime*1000) -gt $wpf.TextBox_Boot.Text) {
+        if (($PreviousPosition + $_.FullTime*1000) -gt $BootTime) {
             $ToCut = $false
             if (($_.Type -ieq 'c') -and ($_.Repeat -eq 0)) {
                 # Infinite C loop: round to nearest PartTime
-                $Cutoff = [Math]::Round(($wpf.TextBox_Boot.Text - $PreviousPosition) / ($_.PartTime*1000)) * $_.PartTime*1000
+                $Cutoff = [Math]::Round(($BootTime - $PreviousPosition) / ($_.PartTime*1000)) * $_.PartTime*1000
                 $ToCut  = $true
             } elseif ($_.Type -ieq 'p') {
                 # P loop
-                $Cutoff = $wpf.TextBox_Boot.Text - $PreviousPosition
+                $Cutoff = $BootTime - $PreviousPosition
                 $ToCut  = $true
             }
             if ($ToCut) {
@@ -121,8 +119,4 @@ $wpf.Button_Goto3.Add_Click({
             -safe 0 `
             -i "$tempLocation\partList.txt" `
             "$tempLocation\result.avi"
-
-    $wpf.Media_Preview.Source = "$TempLocation\result.avi"
-    $wpf.TabControl_Main.SelectedIndex = 5
-    Update-GUI
-})
+}

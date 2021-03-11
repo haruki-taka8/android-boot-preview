@@ -25,16 +25,9 @@ function Update-GUI {
         [Windows.Threading.DispatcherPriority]::Background, [action]{})
 }
 
-Import-Module "$PSScriptRoot\ABP-Import.ps1",
-              "$PSScriptRoot\ABP-Generate.ps1"
-
-$wpf.Button_Goto1.Add_Click({$wpf.TabControl_Main.SelectedIndex = 1})
-$wpf.Button_Play.Add_Click({
-    $wpf.Media_Preview.LoadedBehavior = "Manual"
-    $wpf.Media_Preview.UnloadedBehavior = "Manual"
-    $wpf.Media_Preview.Play()
-})
-
+Import-Module "$PSScriptRoot\ABP-Generate.ps1",
+              "$PSScriptRoot\ABP-Import.ps1",
+              "$PSScriptRoot\ABP-UX.ps1" -Force
 
 # Cleanup on close
 $wpf.ABP.Add_Closing({Remove-Module 'ABP-*'})
