@@ -12,7 +12,7 @@ function Import-BootAnimation {
     if (($ZipLocation -ne '') -and (Test-Path $ZipLocation)) {
         Expand-Archive $ZipLocation $tempLocation -Force
 
-    } elseif (($FolderLocation -ne '') -and (Test-path $FolderLocaion)) {
+    } elseif (($FolderLocation -ne '') -and (Test-path $FolderLocation)) {
         Copy-Item $FolderLocation $tempLocation -Recurse
     }
 
