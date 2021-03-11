@@ -23,3 +23,7 @@ New-Preview `
     -ScreenH $ScreenH `
     -BootTime $BootTime `
     -RepeatCount $Repeat
+
+# Output
+Clear-Host
+Write-Host 'The preview is ready at ./Temp/result.avi'
