@@ -4,6 +4,14 @@ A Powershell/WPF program for viewing Android bootanimation.zip
 I am developing this program because it is time-consuming to manually update `/system/media` and check out how boot animations look, and also because there are only few desktop-based previewers.
 
 ---
+## Operation Mode
+**1. WPF Mode**\
+  If you do not provide any arugments to ABP.ps1, a GUI will guide you through the process.
+
+**2. CLI Mode**\
+  By passing `InPath`, `ScreenW`, `ScreenH`, `BootTime`, and `Repeat`, ABP automatically generates the preview.
+
+---
 ## Dependencies
 - `ffmpeg`
 
