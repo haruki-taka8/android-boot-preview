@@ -62,11 +62,6 @@
                 <TextBlock Text="Importing your selected file..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
                 <TextBlock Text="This window looks unresponsive..." HorizontalAlignment="Center"/>
                 <TextBlock Text="because I don't know how to multithread it!" Margin="0,0,0,64" HorizontalAlignment="Center"/>
-                
-                <StackPanel Margin="0" Name="StackPanel_BigFile">
-                    <TextBlock Text="Your file looks big. It might take a while."  HorizontalAlignment="Center"/>
-                    <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
-                </StackPanel>
             </StackPanel>
         </TabItem>
 
@@ -102,7 +97,6 @@
                 <TextBlock Text="Generating your preview..." Margin="0,0,0,32" HorizontalAlignment="Center"/>
                 <TextBlock Text="This might take a while depending on your GPU."  HorizontalAlignment="Center"/>
                 <TextBlock Text="Sit back and relax." Margin="0,0,0,32" HorizontalAlignment="Center"/>
-                <ProgressBar Name="ProgressBar_Status" Margin="64" MinHeight="20"/>
             </StackPanel>
         </TabItem>
 
