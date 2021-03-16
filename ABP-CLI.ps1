@@ -6,6 +6,12 @@ Param (
     [Parameter(Mandatory)][Int] $Repeat
 )
 
+# Basic settings
+$script:ffmpegLocation = 'INSERT-PATH-TO-FFMPEG\ffmpeg.exe'
+# $script:ffmpegLocation = 'E:\Path\ffmpeg-4.3.2-2021-02-20-essentials_build\bin\ffmpeg.exe'
+$script:tempLocation = "$PSScriptRoot\Temp\"
+Set-Location $PSScriptRoot
+
 # Import required modules
 Import-Module "$PSScriptRoot\ABP-Generate.ps1",
               "$PSScriptRoot\ABP-Import.ps1" -Force
@@ -26,4 +32,6 @@ New-Preview `
 
 # Output
 Clear-Host
-Write-Host 'The preview is ready at ./Temp/result.avi'
+Write-Host "The preview is ready at $PSScriptRoot\Temp\result.avi"
+Write-Host
+Exit-PSSession
