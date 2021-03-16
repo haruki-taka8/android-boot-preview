@@ -4,6 +4,9 @@
 #>
 #—————————————————————————————————————————————————————————————————————————————+—————————————————————
 # Basic settings
+$script:ffmpegLocation = 'INSERT-PATH-TO-FFMPEG\ffmpeg.exe'
+# $script:ffmpegLocation = 'E:\Path\ffmpeg-4.3.2-2021-02-20-essentials_build\bin\ffmpeg.exe'
+$script:tempLocation = "$PSScriptRoot\Temp\"
 Set-Location $PSScriptRoot
 Add-Type -AssemblyName PresentationFramework, PresentationCore, System.Windows.Forms
 
