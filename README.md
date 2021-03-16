@@ -6,10 +6,10 @@ I am developing this program because it is time-consuming to manually update `/s
 ---
 ## Operation Mode
 **1. WPF Mode**\
-  If you do not provide any arugments to ABP.ps1, a GUI will guide you through the process.
+  Run `ABP-GUI.ps1`
 
 **2. CLI Mode**\
-  By passing `InPath`, `ScreenW`, `ScreenH`, `BootTime`, and `Repeat`, ABP automatically generates the preview.
+  Pass `InPath`, `ScreenW`, `ScreenH`, `BootTime`, and `Repeat` to `ABP-CLI.ps1`
 
 ---
 ## Dependencies
