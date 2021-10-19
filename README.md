@@ -1,5 +1,4 @@
 # android-boot-preview
-**This repository is achrived and read-only now.**
 <br><br>
 A Powershell/WPF program for viewing Android bootanimation.zip
 
